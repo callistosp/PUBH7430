@@ -1,7 +1,7 @@
 library(ggplot2)
 library(reshape2)
 
-CorHeatmap <- function(corr.mat) {
+CorHeatmap <- function(corr.mat, add.text = TRUE) {
   # Get lower triangle of the correlation matrix
   get_lower_tri<-function(cormat){
     cormat[upper.tri(cormat)] <- NA
@@ -10,9 +10,10 @@ CorHeatmap <- function(corr.mat) {
 
   lower_tri <- get_lower_tri(corr.mat)
   lower_tri.melt <- melt(lower_tri, na.rm = TRUE)
-  lower_tri.melt$Var2 <- factor(lower_tri.melt$Var2, levels = rev(levels(lower_tri.melt$Var2)))
+  lower_tri.melt$Var1 <- factor(lower_tri.melt$Var1)
+  lower_tri.melt$Var2 <- factor(lower_tri.melt$Var2, levels = rev(levels(factor(lower_tri.melt$Var2))))
 
-  ggplot(data = lower_tri.melt, aes(x = Var1, y = Var2, fill = value)) +
+  g <- ggplot(data = lower_tri.melt, aes(x = Var1, y = Var2, fill = value)) +
     geom_tile(color = "white")+
     scale_fill_gradient2(low = "blue", high = "red", mid = "white",
                          midpoint = 0, limit = c(-1,1), space = "Lab",
@@ -21,7 +22,6 @@ CorHeatmap <- function(corr.mat) {
     theme(axis.text.x = element_text(angle = 45, vjust = 1,
                                      size = 12, hjust = 1))+
     coord_fixed() +
-    geom_text(aes(label = value), color = "black", size = 4) +
     theme(
       axis.title.x = element_blank(),
       axis.title.y = element_blank(),
@@ -34,4 +34,8 @@ CorHeatmap <- function(corr.mat) {
       legend.direction = "horizontal")+
     guides(fill = guide_colorbar(barwidth = 7, barheight = 1,
                                  title.position = "top", title.hjust = 0.5))
+  
+    ifelse(add.text,
+           return(g + geom_text(aes(label = value), color = "black", size = 4)),
+           return(g))
 }
