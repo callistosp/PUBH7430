@@ -1,0 +1,20 @@
+FEV <- read.table("C:/Users/Julian/Google Drive/teaching/PUBH 7430/data/fev/fev.txt",
+                  header=FALSE,
+                  row.names=NULL,
+                  col.names=c("subjID","height","age","init.height","init.age","logFEV"))
+
+FEV$intage <- as.integer(FEV$age) ## Treat age as an integer
+
+FEV$logFEV[1484] <- NA ## Eliminate an outlier
+## Create a wide dataset
+FEVW <- reshape(FEV,v.names=c("height","age","logFEV"),idvar="subjID",timevar="intage",direction="wide")
+
+source("https://github.com/jwolfson/PUBH7430/raw/master/CorHeatmap.R")
+
+### Do a scatterplot matrix
+cor.mat <- round( cor(FEVW[,c("logFEV.6","logFEV.9","logFEV.12","logFEV.15","logFEV.18")],use="pairwise"), 2)
+
+pdf(file="C:/Users/Julian/Google Drive/teaching/PUBH 7430/lectures/graphics/FEVheatmap.pdf",width=6,height=6)
+CorHeatmap(cor.mat)
+dev.off()
+
