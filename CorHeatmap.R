@@ -1,7 +1,10 @@
 library(ggplot2)
 library(reshape2)
 
-CorHeatmap <- function(corr.mat, add.text = TRUE) {
+CorHeatmap <- function(corr.mat, digits = 2, add.text = TRUE) {
+  
+  corr.mat <- round(corr.mat, digits)
+  
   # Get lower triangle of the correlation matrix
   get_lower_tri<-function(cormat){
     cormat[upper.tri(cormat)] <- NA
