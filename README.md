@@ -3,3 +3,7 @@
 ### `CorHeatmap.R`
 
 Draw a heatmap from a correlation matrix. 
+
+### `wallaby_ranefs.R`
+
+Wallaby-specific plots with best fitting and mixed effects regression lines (Lecture 19). 
